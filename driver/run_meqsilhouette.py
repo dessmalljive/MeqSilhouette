@@ -1,5 +1,6 @@
 # coding: utf-8
 import time
+PYXIS_ROOT_NAMESPACE=True
 import Pyxis
 from Pyxis.ModSupport import *
 import ms
@@ -100,7 +101,7 @@ if (1):
         warn('Mis-matched station name order in %s versus %s (see comparison):'\
              %(parameters['station_info'],ms_dict['antenna_table']))
         for c1,c2 in zip(station_names_txt,station_names_anttab):
-            print "%s\t\t%s" % (c1, c2)
+            print("%s\t\t%s" % (c1, c2))
         anttab.close()
         abort('Correct input station_info file and/or antenna table')
  
@@ -121,7 +122,7 @@ if (1):
             warn('Mis-matched station name order in %s versus %s (see comparison):'\
                  %(parameters['bandpass_table'],ms_dict['antenna_table']))
             for c1,c2 in zip(station_names_txt,station_names_anttab):
-                print "%s\t\t%s" % (c1, c2)
+                print("%s\t\t%s" % (c1, c2))
             anttab.close()
             abort('Correct input station_info file and/or antenna table')
 
