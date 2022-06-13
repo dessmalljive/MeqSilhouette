@@ -1,5 +1,5 @@
 from Pyxis.ModSupport import *
-from meqtrees_funcs import run_turbosim,run_wsclean,copy_to_outcol
+from .meqtrees_funcs import run_turbosim,run_wsclean,copy_to_outcol
 import pyrap.tables as pt
 import pyrap.measures as pm, pyrap.quanta as qa
 from framework.comm_functions import *
@@ -48,7 +48,7 @@ class SimCoordinator():
         self.station_names = anttab.getcol('NAME')
         self.pos = anttab.getcol('POSITION')
         self.Nant = self.pos.shape[0]
-        self.N = range(self.Nant)
+        self.N = list(range(self.Nant))
         anttab.close()
 
         field_tab = pt.table(tab.getkeyword('FIELD'),ack=False)
@@ -128,7 +128,7 @@ class SimCoordinator():
             startvis = 0
             endvis = self.vis_per_image
             # INI: cycle through images and simulate including polarisation info, if present.
-            for img_ind in range(self.num_images):
+            for img_ind in range(int(self.num_images)):
                 temp_input_fits = '%s/t%04d'%(self.input_fitsimage,img_ind)
                 info('Simulating visibilities (corr dumps) from %d to %d using input sky model %s'%(startvis,endvis,temp_input_fits))
                 run_wsclean(temp_input_fits, self.input_fitspol, startvis, endvis)
@@ -325,9 +325,9 @@ class SimCoordinator():
             #output = subprocess.check_output(self.ATM_absorption_string(self.chan_freq[0]-self.chan_width, self.chan_freq[-1], self.chan_width,self.average_pwv[ant], self.average_gpress[ant],self.average_gtemp[ant]),shell=True)
             output = subprocess.check_output(ATM_abs_string,shell=True)
             atmfile = open(II('$OUTDIR')+'/atm_output/ATMstring_ant%i.txt'%ant,'w')
-            print>>atmfile,ATM_abs_string
+            print(ATM_abs_string, file=atmfile)
             atmfile.close()
-            atm_abs = file(II('$OUTDIR')+'/atm_output/%satm_abs.txt' % ant, 'w'); atm_abs.write(output); atm_abs.close()
+            atm_abs = open(II('$OUTDIR')+'/atm_output/%satm_abs.txt' % ant, 'wb'); atm_abs.write(output); atm_abs.close()
             freq_atm,dry, wet, temp_atm = np.swapaxes(np.loadtxt(II('$OUTDIR')+'/atm_output/%satm_abs.txt'%ant, skiprows=1, usecols=[0, 1, 2, 3],
                                                         delimiter=', \t'), 0, 1)
             # the following catch is due to a bug in the ATM package
@@ -447,7 +447,7 @@ class SimCoordinator():
 
                 #output = subprocess.check_output(self.ATM_dispersive_string(self.chan_freq[0]-self.chan_width, self.chan_freq[-1], self.chan_width,
                 #  self.average_pwv[ant], self.average_gpress[ant], self.average_gtemp[ant]),shell=True)
-            atm_disp = file(II('$OUTDIR')+'/atm_output/%satm_disp.txt' % ant, 'w'); atm_disp.write(output); atm_disp.close()
+            atm_disp = open(II('$OUTDIR')+'/atm_output/%satm_disp.txt' % ant, 'wb'); atm_disp.write(output); atm_disp.close()
             wet_non_disp, wet_disp, dry_non_disp = np.swapaxes(np.genfromtxt(II('$OUTDIR')+'/atm_output/%satm_disp.txt'%ant, skip_header=1, usecols=[1, 2, 3],
                                                               delimiter=',',autostrip=True), 0, 1)
             if (self.trop_wetonly):
@@ -1042,8 +1042,8 @@ class SimCoordinator():
         ax1 = fig.add_subplot(111)
         ax2 = ax1.twiny()
         #x_vlba,y_vlba = np.loadtxt('/home/deane/git-repos/vlbi-sim/output/XMM-LSS/vlba_xmmlss_sigma_vs_uvbin.txt').T #/home/deane/git-repos/vlbi-sim/output/VLBA_COSMOS/vlba_sigma_vs_uvbin.txt',comments='#').T
-        x = np.ravel(zip(uvbins_edges[:-1],uvbins_edges[1:]))
-        y = np.ravel(zip(stdbins,stdbins))
+        x = np.ravel(list(zip(uvbins_edges[:-1],uvbins_edges[1:])))
+        y = np.ravel(list(zip(stdbins,stdbins)))
         #y_minus1ant = np.ravel(zip(stdbins_minus1ant,stdbins_minus1ant))
 
         #ax1.plot(x_vlba,y_vlba*1e6,color='grey',alpha=1,label='VLBA',lw=3)

@@ -6,7 +6,8 @@ base_fitsimage = sys.argv[1]
 freq = float(sys.argv[2]) # Hz
 pixscale = float(sys.argv[3]) # arcsec
 
-def oneGaussian((x, y), amplitude, xo, yo, sigma_x, sigma_y, bpa, offset):
+def oneGaussian(xxx_todo_changeme, amplitude, xo, yo, sigma_x, sigma_y, bpa, offset):
+    (x, y) = xxx_todo_changeme
     sigma_y = sigma_x    
     xo = float(xo)
     yo = float(yo)
@@ -25,8 +26,8 @@ hdr['CDELT2'] = pixscale/3600.
 hdr['CRVAL4'] = freq 
 d *= 0
 subsize = int((len(d) )/2.)
-y=range(len(d[0]))
-x=range(len(d[0]))
+y=list(range(len(d[0])))
+x=list(range(len(d[0])))
 x, y = np.mgrid[-subsize:subsize, -subsize:subsize]
 
 #oneGaussian((x, y), amplitude, xo, yo, sigma_x, sigma_y, bpa, offset)

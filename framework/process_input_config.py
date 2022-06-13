@@ -15,7 +15,7 @@ def read_json_files(config):
 
     # Remove empty strings and convert unicode characters to strings
     params = {}
-    for key, val in jparams.iteritems():
+    for key, val in jparams.items():
         # Make sure all keys are strings
         _key = str(key)
 
@@ -23,7 +23,7 @@ def read_json_files(config):
         if val == "" or _key == "#":
             pass
         # convert unicode values to strings
-        elif isinstance(val, unicode):
+        elif isinstance(val, str):
             params[_key] = str(val)
         else:
             params[_key] = val
@@ -39,5 +39,5 @@ def params_refactoring(_params):
 
 
 def setup_keyword_dictionary(prefix, dictionary):
-    f = lambda x: filter(lambda a: a[0].startswith(x), dictionary.items())
+    f = lambda x: [a for a in list(dictionary.items()) if a[0].startswith(x)]
     return dict([(key.split(prefix)[-1], val) for (key, val) in f(prefix)])

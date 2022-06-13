@@ -52,7 +52,7 @@ Nvisperbin_nomk = np.zeros([numuvbins])
 colorlist = ['#336699', 'cyan', 'pink', 'r' ,'green', 'k', 'yellow', 'grey','orange', 'purple']
 #colorlist.reverse()
 if (len(colorlist) < numuvbins):
-    print 'add more colors to colorlist'
+    print('add more colors to colorlist')
     sys.exit()
 else:
     colorlist = colorlist[:numuvbins]
@@ -180,9 +180,9 @@ fig = pl.figure(figsize=(10,5.2))
 ax1 = fig.add_subplot(111)
 ax2 = ax1.twiny()
 #x_vlba,y_vlba = np.loadtxt('/home/deane/git-repos/vlbi-sim/output/XMM-LSS/vlba_xmmlss_sigma_vs_uvbin.txt').T #/home/deane/git-repos/vlbi-sim/output/VLBA_COSMOS/vlba_sigma_vs_uvbin.txt',comments='#').T
-x = np.ravel(zip(uvbins_edges[:-1],uvbins_edges[1:]))
-y = np.ravel(zip(stdbins,stdbins))
-y_nomk = np.ravel(zip(stdbins_nomk,stdbins_nomk))
+x = np.ravel(list(zip(uvbins_edges[:-1],uvbins_edges[1:])))
+y = np.ravel(list(zip(stdbins,stdbins)))
+y_nomk = np.ravel(list(zip(stdbins_nomk,stdbins_nomk)))
 
 #ax1.plot(x_vlba,y_vlba*1e6,color='grey',alpha=1,label='VLBA',lw=3)
 ax1.plot(x,y_nomk*1e3,color='#336699',linestyle='solid',alpha=1,label='EHT',lw=3)
