@@ -1,52 +1,63 @@
-FROM kernsuite/base:dev 
+FROM kernsuite/base:7
 
-RUN docker-apt-install  casalite python-numpy python-casacore \ 
+RUN docker-apt-install apt-utils libboost-all-dev \
+         locales locales-all \
+         sudo time vim less wget git \
+         python-bs4 \ 
+         casalite python3-numpy python3-casacore \ 
+         python3-pip \
+         python3-seaborn \
 			meqtrees \
-			python-pyxis \
-			python-scatterbrane \			
-			time\
-			vim
-
-#took out simms because installing it manually below
-
+         simms \
+         wsclean \
+         python3-seaborn \
+         pyxis python3-pyxis
+         
+         
 RUN pip install --upgrade pip
-
-ENV LD_LIBRARY_CONFIG=/usr/local/lib
-
-#ADD downloaded_files /downloaded_files
-#RUN tar -xzf /downloaded_files/boost_1_64_0.tar.gz --directory / && rm /downloaded_files/boost_1_64_0.tar.gz
-#RUN tar -xzf /downloaded_files/aatm-0.5.tar.gz --directory / && rm /downloaded_files/aatm-0.5.tar.gz
-#RUN tar -xzf /downloaded_files/MeqSilhouette.tar.gz --directory / && rm /downloaded_files/MeqSilhouette.tar.gz
-
-ADD downloaded_files/boost_1_64_0.tar.gz /
-RUN cd /boost_1_64_0 && ./bootstrap.sh --with-libraries=program_options && ./b2 --prefix=/usr/local install
-
-ADD downloaded_files/aatm-0.5.tar.gz /
-RUN cd /aatm-0.5 && ./configure && make && make install
-
-ADD downloaded_files/simms.tar.gz /
-RUN cd /simms && python setup.py install
-
-RUN ldconfig
-
+RUN pip install mpltools astLib
 RUN pip install termcolor 
 
+RUN mkdir /downloaded_files
+RUN wget -P /downloaded_files http://www.mrao.cam.ac.uk/~bn204/soft/aatm-0.5.tar.gz
+RUN tar xzf /downloaded_files/aatm-0.5.tar.gz --directory / && rm /downloaded_files/aatm-0.5.tar.gz
+RUN cd /aatm-0.5 && ./configure && make && make install
+ENV LD_LIBRARY_CONFIG=/usr/local/lib
+RUN ldconfig
+
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+
+# RUN apt update
+# RUN apt install -y --download-only 
 ARG BUID=1001
 RUN useradd -l -m -s /bin/bash -N -u $BUID mequser
+RUN usermod -aG sudo mequser
+# RUN echo -e "meq\nmeq" | passwd mequser
+RUN echo "mequser:meq" | chpasswd
 
-ENV MEQTREES_CATTERY_PATH=/usr/lib/python2.7/dist-packages/Cattery/
-
-ENV CODE_DIR=/vlbi-sim/
-ADD /downloaded_files/vlbi-sim.tar.gz ${CODE_DIR}/..
-RUN cd ${CODE_DIR}/framework/ && pip install -e .
-RUN ln -sf $MEQTREES_CATTERY_PATH/Siamese/turbo-sim.py ${CODE_DIR}/framework/framework/turbo-sim.py 
-
-RUN chown -R mequser ${CODE_DIR} 
+ENV MEQTREES_CATTERY_PATH=/usr/lib/python3/dist-packages/Cattery
 USER mequser
+WORKDIR /home/mequser
+RUN git clone https://github.com/dessmalljive/MeqSilhouette.git
 
-# to complete initialization:
+
+ENV PYTHONPATH /home/mequser/MeqSilhouette
+ENV MEQS_DIR /home/mequser/MeqSilhouette
+
+RUN 2to3-2.7 -w MEQS_DIR/driver/run_meqsilhouette.py
+RUN 2to3-2.7 -w framework/*py
+
+RUN ln -sf $MEQTREES_CATTERY_PATH/Siamese/turbo-sim.py /home/mequser/MeqSilhouette/framework/turbo-sim.py
+
+
+# And the following to your PYTHONPATH:
+# - /path/to/MeqSilhouette/framework
+
 RUN echo -e "\nexit" | casa 
-RUN python -c "import matplotlib.pyplot"
+RUN python3 -c "import matplotlib.pyplot"
 
-WORKDIR ${CODE_DIR}
 CMD ["/bin/bash"] 
+
+
