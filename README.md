@@ -2,17 +2,13 @@
 
 ## Installation
 
-Two options:
-
 1. Use docker if you'd like to be system independent.
 
-2. Build on Ubuntu 20.04 using the included Dockerfile.
-
-3. The Dockerfile downloads, compiles and installs AATM:
+2. The included Dockerfile builds a container for Kernsuite 7 (Ubuntu 20.04) and downloads, compiles and installs AATM (the only external dependency)
 
 [AATM v0.5](http://www.mrao.cam.ac.uk/~bn204/soft/aatm-0.5.tar.gz): mean atmospheric simulator (average opacities, sky brightness temp). (Download mirrored [here](https://tinyurl.com/ycuf32oy))
 
-4. It also creates a user (mequser) with password "meq" and sudo privileges. Be aware that Docker has issues separating superuser privileges on containers from those on their hosts!
+3. It also creates a user (mequser) with password "meq" and sudo privileges. Be aware that Docker has issues separating superuser privileges on containers from those on their hosts!
 
 # Running MeqSilhouette
 
