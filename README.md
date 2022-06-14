@@ -6,68 +6,13 @@ Two options:
 
 1. Use docker if you'd like to be system independent.
 
-2. Build on Ubuntu 16.04 using the following steps:
+2. Build on Ubuntu 20.04 using the included Dockerfile.
 
-* Visit [Kern-3](https://launchpad.net/~kernsuite/+archive/ubuntu/kern-3) and follow the few-step instructions
-* sudo apt-get install meqtrees casalite simms pyxis wsclean
-* build aatm
-* see additional, more standard modules below
-* add required paths below
-
-## Requirements
-
-[simms](https://github.com/radio-astro/simms):  python wrapper for creating empty Measurement Sets using the CASA simulate tool
-
-[WSClean](https://sourceforge.net/p/wsclean/wiki/Home/): predicts visibilities using the Radio Interferometry Measurement Equation
-
-[MeqTrees](http://meqtrees.net): predicts visibilities using the Radio Interferometry Measurement Equation (for ASCII sky models)
-
-[Pyxis](https://github.com/ska-sa/pyxis/): python-esque scripting language for MeqTrees 
-
-[Astropy](http://www.astropy.org/): v1.3 and above
-
-[CASA](https://casa.nrao.edu/casa_obtaining.shtml): v4.3 and above
+3. The Dockerfile downloads, compiles and installs AATM:
 
 [AATM v0.5](http://www.mrao.cam.ac.uk/~bn204/soft/aatm-0.5.tar.gz): mean atmospheric simulator (average opacities, sky brightness temp). (Download mirrored [here](https://tinyurl.com/ycuf32oy))
 
-
-## List of Python modules used
-
-- numpy
-- matplotlib
-- pyfits
-- pyrap
-- astropy
-- termcolor
-- time
-- glob
-- os
-- sys
-- mpltools
-- seaborn
-
-
-
-## PATHS to set
-Add the following to the PATH enviroment variable:
-- /path/to/simms/simms/bin
-- /path/to/CASA/bin
-
-And the following to your PYTHONPATH:
-- /path/to/MeqSilhouette/framework
-
-
-Add the following environment variable to point to your MeqSilhouette directory:
-
-export MEQS_DIR=/path/to/MeqSilhouette
-
-Finally, add the symbolic link:
-
-- ln -s /path/to/meqtrees-cattery/Siamese/turbo-sim.py /path/to/MeqSilhouette/framework/turbo-sim.py
-
-
-
-
+4. It also creates a user (mequser) with password "meq" and sudo privileges. Be aware that Docker has issues separating superuser privileges on containers from those on their hosts!
 
 # Running MeqSilhouette
 
@@ -96,8 +41,6 @@ sim = run_meqsilhouette(config)
 
 While setting up the required enviroment to run MeqSilhouette is just a few step process (for Ubuntu 14.04, 16.04),
 one can avoid system dependencies entirely with Docker.
-
-[add instructions here]
 
 ###d) In a virtual environment
 
@@ -151,9 +94,6 @@ The following two important paths are specified in the configuration file:
 export LD_LIBRARY_PATH=/path/to/aatm-0.5/lib:$LD_LIBRARY_PATH
 
 export PATH=/path/to/aatm-0.5/bin:$PATH
-
-2. aatm will not compile without boost program options. In ubuntu 16.04, the relevant packages are libboost-program-options-dev, libboost-program-options1.58-dev, and libboost-program-options1.58.0
-
 
 ## Additional links
 
